@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    // tools {
-    //     maven 'Maven_3.8'   // nom défini dans Manage > Global Tool Configuration
-    // }
-
     environment {
         GIT_CREDENTIALS_ID = 'git_credentials'
         GITHUB_REPO        = 'https://github.com/Nirina-fifalin/tp2'
@@ -23,28 +19,28 @@ pipeline {
         // ─── Étape 2 : Compiler l'application avec Maven ────────────────────
         stage('Build') {
             steps {
-                sh 'mvn clean install -DskipTests'
+                bat 'mvn clean install -DskipTests'
             }
         }
 
         // ─── Étape 3 : Exécuter les tests unitaires ──────────────────────────
         stage('Unit Tests') {
             steps {
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
 
         // ─── Étape 4 : Pull de hello-world depuis DockerHub (test) ───────────
         stage('Pull Docker Image') {
             steps {
-                sh 'docker pull hello-world'
+                bat 'docker pull hello-world'
             }
         }
 
         // ─── Étape 5 : Lancer hello-world pour vérifier que Docker fonctionne ─
         stage('Run Docker Image') {
             steps {
-                sh 'docker run --rm hello-world'
+                bat 'docker run --rm hello-world'
             }
         }
     }
