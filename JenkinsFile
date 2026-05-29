@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         GIT_CREDENTIALS_ID = 'git_credentials'
-        GITHUB_REPO        = 'https://github.com/Nirin-fifalin/tp2.git'
+        GITHUB_REPO        = 'https://github.com/Nirina-fifalin/tp2'
     }
 
     stages {
