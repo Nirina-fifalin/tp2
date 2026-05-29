@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    // tools {
+    //     maven 'Maven_3.8'   // nom défini dans Manage > Global Tool Configuration
+    // }
+
+    environment {
+        GIT_CREDENTIALS_ID = 'git_credentials'
+        GITHUB_REPO        = 'https://github.com/Nirin-fifalin/tp2.git'
+    }
+
+    stages {
+
+        // ─── Étape 1 : Récupérer le code depuis GitHub ─────────────────────
+        stage('Git Checkout') {
+            steps {
+                git credentialsId: "${GIT_CREDENTIALS_ID}",
+                    url: "${GITHUB_REPO}"
+            }
+        }
+
+        // ─── Étape 2 : Compiler l'application avec Maven ────────────────────
+        stage('Build') {
+            steps {
+                sh 'mvn clean install -DskipTests'
+            }
+        }
+
+        // ─── Étape 3 : Exécuter les tests unitaires ──────────────────────────
+        stage('Unit Tests') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        // ─── Étape 4 : Pull de hello-world depuis DockerHub (test) ───────────
+        stage('Pull Docker Image') {
+            steps {
+                sh 'docker pull hello-world'
+            }
+        }
+
+        // ─── Étape 5 : Lancer hello-world pour vérifier que Docker fonctionne ─
+        stage('Run Docker Image') {
+            steps {
+                sh 'docker run --rm hello-world'
+            }
+        }
+    }
+
+    // ─── Post-action : notification email en cas d'échec ─────────────────────
+    post {
+        failure {
+            emailext(
+                body: "Le build #${BUILD_NUMBER} a échoué. Consultez : ${BUILD_URL}",
+                subject: "Jenkins - Build échoué : ${JOB_NAME} #${BUILD_NUMBER}",
+                recipientProviders: [requestor()],
+                to: 'TON_EMAIL@exemple.com'
+            )
+        }
+        success {
+            echo 'Pipeline terminé avec succès. Docker hello-world a bien tourné !'
+        }
+    }
+}
