@@ -56,7 +56,7 @@ pipeline {
                 body: "Le build #${BUILD_NUMBER} a échoué. Consultez : ${BUILD_URL}",
                 subject: "Jenkins - Build échoué : ${JOB_NAME} #${BUILD_NUMBER}",
                 recipientProviders: [requestor()],
-                to: 'TON_EMAIL@exemple.com'
+                to: 'nirin.fifalin@gmail.com'
             )
         }
         success {
